@@ -1,16 +1,32 @@
 import React, {useState} from 'react';
+import './checkbox.css'
+import pencil from '../../assets/icons/pencil.svg'
+import trash from '../../assets/icons/trash.svg'
+
+import {
+        TodoList,
+        TodoItem,
+        AppTitle, 
+        InputTask, 
+        PencilIcon,
+        DeleteIcon,
+        ClearAll,
+        EmptyListMessage
+    } from "./style.css";
 
 //the item (task) in the todo list
 const Task = ({task, index, removeTask, toggleTask}) =>{
     return(
-        <div
-            className="task"
-            style={{ textDecoration: task.completed ? "line-through" : "" }}
-         >
-        <input type="checkbox" onClick={() => toggleTask(index)}/>
-        {task.title}
-        <button style={{ background: "red" }} onClick={() => removeTask(index)}>x</button>
-    </div>
+        <TodoItem>
+            <label className="container"
+                    style={{textDecoration: task.completed ? "line-through" : "" , color: task.completed ? "#5ab87d" : ""}}> 
+                    {task.title}
+                <input type="checkbox" onClick={() => toggleTask(index)}/>
+                <span className="checkmark"></span>
+            </label>
+            <DeleteIcon src={trash} alt="delete item" onClick={() => removeTask(index)} />
+        </TodoItem>
+
     )
 }
 
@@ -24,12 +40,13 @@ const CreateTask = ({ addTask }) => {
         setValue("");
     }
     return (
-        <form onSubmit={handleSubmit}>
-            <input
+        <form style={{position: 'relative'}} onSubmit={handleSubmit}>
+            <PencilIcon src={pencil} alt="add your task"/>
+            <InputTask
                 type="text"
                 className="input"
                 value={value}
-                placeholder="Add a new task"
+                placeholder="what needs to be accomplished?"
                 onChange={e => setValue(e.target.value)}
             />
         </form>
@@ -38,20 +55,7 @@ const CreateTask = ({ addTask }) => {
 
 // the todo list component
 const Todo = () => {
-    const [tasks, setTasks] = useState([
-        {
-            title: "Grab some Pizza",
-            completed: true
-        },
-        {
-            title: "Do your workout",
-            completed: true
-        },
-        {
-            title: "Hangout with friends",
-            completed: false
-        }
-    ])
+    const [tasks, setTasks] = useState([])
 
     // add the task to the todo list function
     const addTask = title => { 
@@ -82,12 +86,14 @@ const Todo = () => {
 
     return(
         <div className="app-container">
+            <AppTitle>react to-do</AppTitle>
              <div className="add-task">
                 <CreateTask addTask = {addTask}/>
             </div>
-
-            <h2>Todo List</h2>
-            {tasks.map((task, index)=>(
+            <TodoList>            
+                {tasks.length === 0 ? 
+                <EmptyListMessage>your list is empty, fill it!</EmptyListMessage> 
+                :tasks.map((task, index)=>(
                 <Task 
                     key={index}
                     task={task}
@@ -96,7 +102,9 @@ const Todo = () => {
                     removeTask={removeTask}
                 />
             ))}
-           <button onClick={deleteList}>delete all</button>
+            </TodoList>
+
+           {tasks.length !== 0 && <ClearAll onClick={deleteList}>  <DeleteIcon src={trash} alt="delete all items"/>clear all</ClearAll>}
         </div>
     )
 }
