@@ -21,7 +21,7 @@ const Task = ({task, index, removeTask, toggleTask}) =>{
             <label className="container"
                     style={{textDecoration: task.completed ? "line-through" : "" , color: task.completed ? "#5ab87d" : ""}}> 
                     {task.title}
-                <input type="checkbox" onClick={() => toggleTask(index)}/>
+                <input type="checkbox" checked={task.completed} onClick={() => toggleTask(index)}/>
                 <span className="checkmark"></span>
             </label>
             <DeleteIcon src={trash} alt="delete item" onClick={() => removeTask(index)} />
